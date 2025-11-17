@@ -1,0 +1,20 @@
+# Archivos compilados de Python
+*.pyc
+__pycache__/
+
+# Archivos de Odoo
+*.log
+*.pot
+*.po~
+*.py~
+
+# Archivos de Doodba / Docker
+.dockerignore
+.env
+*.sqlite
+*.db
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+*.swp
