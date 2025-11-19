@@ -5,6 +5,8 @@ class EstateProperty(models.Model):
     _name = "estate.property"
     _description = "propiedad"
 
+    # -------------------------------------------------ATRIBUTOS----------------------------------------------------------
+
     name = fields.Char(string = "titulo", required = True)
     description = fields.Text(string = "descripcion", required = True)
     postcode = fields.Char(string = "Codigo postal")
@@ -16,6 +18,7 @@ class EstateProperty(models.Model):
     facades = fields.Integer(string = "Fachadas")
     garage = fields.Boolean(string = "Garage")
     garden = fields.Boolean(string = "Jardin")
+
     garden_orientation = fields.Selection(
         selection = [("north","Norte"), ("south", "Sur"), ("east","Este"), ("west","oeste")],
         defaulth = "north", string = "Orientacion del jardin")
@@ -26,3 +29,13 @@ class EstateProperty(models.Model):
         required = True,
         default = "new",
         copy = False)
+
+    # -------------------------------------------------RELACIONES----------------------------------------------------------
+    
+    #Many2one
+    property_type_id = fields.Many2one(comodel_name = "estate.property.type", string = "Tipo de Propiedad")
+    buyer_id = fields.Many2one(comodel_name = "res.partner", string = "Comprador")
+    salesman_id = fields.Many2one(comodel_name = "res.users", string = "Vendedor", copy = True, default = lambda self: self.env.user)
+
+
+    

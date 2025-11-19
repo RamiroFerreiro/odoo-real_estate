@@ -16,12 +16,32 @@
             parent="menu_real_estate_root"
         />
 
+        <menuitem
+            id="menu_real_estate_settings"
+            name="Ajustes"
+            parent="menu_real_estate_root"
+        />
+
         <!-- Acción dentro del menú -->
         <menuitem
             id="menu_estate_property_action"
             name="Propiedades"
             parent="menu_real_estate_advertisements"
             action="estate_property_action"
+        />
+
+        <menuitem
+            id="menu_estate_property_type_action"
+            name="Tipo de Propiedades"
+            parent="menu_real_estate_settings"
+            action="estate_property_type_action"
+        />
+
+        <menuitem
+            id="menu_estate_property_tag_action"
+            name="Etiquetas de Propiedades"
+            parent="menu_real_estate_settings"
+            action="estate_property_tag_action"
         />
 
     </data>
