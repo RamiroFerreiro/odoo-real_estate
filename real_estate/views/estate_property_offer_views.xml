@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- VISTA DE LISTA -->
+        <record id="estate_property_offer_list" model="ir.ui.view">
+            <field name="name">estate.property.offer.list</field>
+            <field name="model">estate.property.offer</field>
+            <field name="arch" type="xml">
+
+                <list string="Lista de Ofertas de Propiedad" editable="top">
+                    <field name="price"/>
+                    <field name="status"/>
+                    <field name="partner_id"/>
+                </list>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

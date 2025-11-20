@@ -23,6 +23,7 @@
                     <field name="bedrooms"/>
                     <field name="living_area"/>
                     <field name="facades"/>
+                
 
                     <filter string="Mis Propiedades" name="filter_my_properties" domain="[('create_uid','=',uid)]"/>
                     <filter string="Propiedades Disponibles" name="filter_available_properties" domain="[('state','in', ['new', 'offer_received'])]"/>
@@ -51,6 +52,7 @@
                     <field name="living_area"/>
                     <field name="selling_price"/>
                     <field name="date_availability"/>
+                    <field name="tag_ids" widget="many2many_tags"/>
                 </list>
 
             </field>
@@ -71,6 +73,11 @@
                             <h1>
                                 <field name="name" placeholder="Nombre propiedad"/>
                             </h1>
+                        </group>
+                        <group>
+                            <h3>
+                                <field name="tag_ids" placeholder="Etiquetas de propiedad" widget="many2many_tags"/>
+                            </h3>
                         </group>
 
                         <group>
@@ -100,6 +107,10 @@
                                         <field name="garden_orientation"/>
                                     </group>
                                 </group>
+                            </page>
+
+                            <page string="Ofertas">
+                                <field name="offer_ids"/>
                             </page>
                         </notebook>
                     </sheet>
