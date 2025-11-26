@@ -2,16 +2,44 @@
 <odoo>
     <data>
 
+        <!-- Acción -->
+        <record id="estate_property_offer_action" model="ir.actions.act_window">
+            <field name="name">Ofertas de propiedades</field>
+            <field name="res_model">estate.property.offer</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Filtros y agrupaciones -->
+        <record id="estate_property_offer_search_view" model="ir.ui.view">
+            <field name="name">estate.property.offer.search</field>
+            <field name="model">estate.property.offer</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Propiedades">
+
+                    <!-- Campos de búsqueda -->
+                    <field name="property_type"/>
+    
+                    <filter string="Agrupar por tipo de propiedad" name="groupby_property_type" context="{'group_by':'property_type'}"/>
+                    
+                </search>
+            </field>
+        </record>
+
         <!-- VISTA DE LISTA -->
         <record id="estate_property_offer_list" model="ir.ui.view">
             <field name="name">estate.property.offer.list</field>
             <field name="model">estate.property.offer</field>
             <field name="arch" type="xml">
 
-                <list string="Lista de Ofertas de Propiedad" editable="top">
+                <list string="Lista de Ofertas de Propiedad">
+                
                     <field name="price"/>
                     <field name="status"/>
                     <field name="partner_id"/>
+                    <field name="validity"/>
+                    <field name="date_deadline"/>
+                    <button name="action_accept_offer" type="object" icon="fa-check" title="Aceptar oferta"/>
+
                 </list>
 
             </field>

@@ -61,3 +61,22 @@ Se utiliza el campo many2many porque la relacion entre propiedades y etiquetas p
 
 ### Punto 40
 No es necesario incorporar una acción porque se llama la vista de lista ofertas desde el formulario de propiedad.
+
+## Unidad 2
+### Punto 3
+
+ El campo no se ve reflejado en la tabla de pgweb porque es un campo computado y se calcula cada vez que se llama desde la vista. No se persiste porque hasta el momento no se indicó "store = true" que por defecto está en false. 
+
+### Punto 5
+Si al campo computado le agregamos "store = true" este se calculará solamente una única vez y luego cada vez que se llame desde la vista se consultará desde la base de datos.
+
+Además del "store = true" para persistir el campo con su valor, hay que utilizar el decorador "@api.depends()" para establecer la dependencia con otros campos y que se calcule cada vez que se llama desde la vista.
+
+### Punto 7
+Al campo "best_offer" creo que es bueno almacenarlo para no tener que estar buscando el valor máximo cada vez que se ejecuta. En caso de que crezca mucho la cantidad de ofertas, el costo del cómputo será muy grande, por eso conviene almacenarlo. La desventaja se encuentra en que cada vez que se agrega una nueva oferta, el campo "best_offer"  debe calcularse y persistirse.
+
+Por otra parte, si en un futuro queremos visualizar el campo en una lista no se tiene que calcular por cada llamado y se consulta directamente de la base de datos.
+
+### Punto 19
+No se puede utilizar "related" porque offer_id es un atributo One2Many y offer_partner_ids  es un atributo Many2many. Un related apunta a un único campo de un único registro.
+
