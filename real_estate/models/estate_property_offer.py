@@ -1,17 +1,16 @@
 from odoo import models, fields, api
 from datetime import timedelta
+from odoo.exceptions import UserError
 
 class EstatePropertyOffer(models.Model):
     _name = "estate.property.offer"
     _description = "Oferta sobre propiedades"
 
-
     # -------------------------------------------------ATRIBUTOS----------------------------------------------------------
-
+    
     price = fields.Float(string = "precio", required = True)
     status = fields.Selection(string = "Estado", selection= [("accepted", "Aceptada"),("refused", "Rechazada")])
     validity = fields.Integer(string = "Validez", default = 7)
-
 
     # -------------------------------------------------RELACIONES----------------------------------------------------------
     
@@ -20,11 +19,12 @@ class EstatePropertyOffer(models.Model):
     property_id = fields.Many2one(comodel_name = "estate.property", string = "Propiedad", required = True)
     
     # -------------------------------------------------CAMPOS COMPUTADOS----------------------------------------------------------
-
+    
     date_deadline = fields.Date(string = "Fecha limite", compute = "_compute_date_deadline", inverse = "_inverse_date_deadline", store = True)
     property_type = fields.Char(string = "Tipo de propiedad", related = "property_id.property_type_id.name", stored = True)
 
-
+    # ------------------------------------------------- COMPUTOS ----------------------------------------------------------    
+    
     @api.depends("validity", "create_date")
     def _compute_date_deadline(self):
         for record in self:
@@ -75,5 +75,31 @@ class EstatePropertyOffer(models.Model):
     _sql_constraints = [('unique_offer', 'UNIQUE(partner_id, property_id)', 'Una persona solo puede realizar una unica oferta por cada propiedad.')]
 
     
+    # ------------------------------------------------- ORM ----------------------------------------------------------
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+
+            property_id = self.env["estate.property"].browse(vals["property_id"])
+            best_offer = property_id.best_offer
+
+
+            if(property_id.state == "new" or  property_id.state == "offer_received"):
+
+                if( vals["price"] >= best_offer):
+
+                    property_id.write({"state": "offer_received"})
+
+                else:
+
+                    raise UserError("Error: No se puede ofertar a un precio menor que la mejor oferta")
+                
+            else:
+                raise UserError("Error: Solo se puede ofertar a un estado NUEVO o OFERTA RECIBIDA")
+            
+        return super().create(vals_list)
 
             
+
+

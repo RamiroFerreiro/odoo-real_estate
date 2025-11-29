@@ -2,13 +2,15 @@ from odoo import models, fields, api
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError
 import random
+from odoo import Command
+
 
 class EstateProperty(models.Model):
     _name = "estate.property"
     _description = "propiedad"
 
     # -------------------------------------------------ATRIBUTOS----------------------------------------------------------
-
+    
     name = fields.Char(string = "titulo", required = True)
     description = fields.Text(string = "descripcion", required = True)
     postcode = fields.Char(string = "Codigo postal")
@@ -23,10 +25,12 @@ class EstateProperty(models.Model):
 
     garden_orientation = fields.Selection(
         selection = [("north","Norte"), ("south", "Sur"), ("east","Este"), ("west","oeste")],
-        defaulth = "north", string = "Orientacion del jardin")
+        default = "north", string = "Orientacion del jardin")
+    
     garden_area = fields.Integer(string = "Superficie del jardin")
 
-    state = fields.Selection(string = "estado", 
+    state = fields.Selection(
+        string = "estado", 
         selection = [("new","Nuevo"), ("offer_received", "Oferta Recibida"), ("offer_accepted","Oferta Aceptada"), ("sold","vendido"), ("canceled", "cancelado")],
         required = True,
         default = "new",
@@ -53,6 +57,7 @@ class EstateProperty(models.Model):
     offer_partner_ids = fields.Many2many( comodel_name="res.partner", string="Interesados", compute="_compute_offer_partner_ids")
 
     # ------------------------------------------------- COMPUTOS ----------------------------------------------------------    
+   
     @api.depends("living_area", "garden_area")
     def _compute_total_area(self):
         for record in self:
@@ -74,6 +79,9 @@ class EstateProperty(models.Model):
         for record in self:
             record.offer_partner_ids = record.offer_ids.mapped("partner_id")
 
+
+    # ------------------------------------------------- ONCHANGE ----------------------------------------------------------
+
     @api.onchange("garden")
     def _on_change_garden(self):
         if self.garden:
@@ -90,7 +98,7 @@ class EstateProperty(models.Model):
                 'warning': {'title': "Warning", 'message': "Cuidado! Precio demasiado bajo!", 'type': 'notification'},
             }
 
-    # ------------------------------------------------- ACCIONES ----------------------------------------------------------  
+    # ------------------------------------------------- ACCIONES ---------------------------------------------------------- 
     def action_mark_as_sold(self):
         for record in self:
             if record.state == "canceled":
@@ -133,4 +141,36 @@ class EstateProperty(models.Model):
                 "property_id": record.id
 
             })
+    
+    def action_clear_tags(self):
+        
+        for record in self:
+            record.tag_ids = [Command.clear()]
 
+
+    def action_link_tags(self):
+
+        tags = self.env["estate.property.tag"].search([])
+
+        for record in self:
+            record.tag_ids = [Command.set(tags.ids)]
+    
+    def action_brand_new(self):
+
+        tag = self.env["estate.property.tag"].search([('name', '=', 'A estrenar')], limit=1)
+
+        for record in self:
+            if tag:
+                record.tag_ids = [Command.link(tag.id)]
+            else:
+                record.tag_ids = [Command.create({'name' : 'A estrenar'})]
+
+        return 
+    
+    # ------------------------------------------------- ORM ----------------------------------------------------------
+    
+    @api.ondelete(at_uninstall=False)
+    def _unlink_if_new_or_cancelled(self):
+        for rec in self:
+            if rec.state not in ("new", "canceled"):
+                raise UserError("Solo se pueden borrar propiedades nuevas o canceladas.")

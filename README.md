@@ -80,3 +80,9 @@ Por otra parte, si en un futuro queremos visualizar el campo en una lista no se 
 ### Punto 19
 No se puede utilizar "related" porque offer_id es un atributo One2Many y offer_partner_ids  es un atributo Many2many. Un related apunta a un único campo de un único registro.
 
+### Punto 22
+Usar @api.ondelete() es más conveniente que poner la validación en la lógica de negocio porque este decorador actúa a nivel del ORM, garantizando que ningún proceso —ni directo ni indirecto— pueda eliminar registros no permitidos, manteniendo las capas bien separadas y el código más seguro, coherente y mantenible.
+
+### Punto 24
+
+No es necesario crear una regla de acceso en ir.model.access.csv para este caso porque estamos usando herencia clásica (_inherit) sobre el modelo res.users. Esto significa que estamos agregando un campo a un modelo existente, y por lo tanto, se mantienen las reglas de acceso ya definidas para res.users. Todos los usuarios con permisos sobre ese modelo seguirán accediendo normalmente al nuevo campo agregado.
