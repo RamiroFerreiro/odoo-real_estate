@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <!-- VISTA DE FORMULARIO HEREDADA -->
+        <record id="view_users_form" model="ir.ui.view">
+            <field name="name">res.users.form.inherit.real.estate</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Extensiones -->
+                <xpath expr="//notebook" position="inside">
+                    <page string="Properties" name="properties">
+                        <group>
+                            <field name="property_ids" string= ""/>
+                        </group>
+                    </page>
+                </xpath>
+                
+            </field>
+        </record>
+</odoo>
